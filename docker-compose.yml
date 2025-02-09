@@ -1,0 +1,30 @@
+version: '3.4'
+
+services:
+  servicea:
+    image: ${DOCKER_REGISTRY-}servicea
+    build:
+      context: .
+      dockerfile: ServiceA/Dockerfile
+    ports:
+      - "5050:5050"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5050
+      - GRPC_CLIENT_ALLOW_HTTP=1
+      - ASPNETCORE_PROTOCOL=Http2
+    depends_on:
+      - serviceb
+
+  serviceb:
+    image: ${DOCKER_REGISTRY-}serviceb
+    build:
+      context: .
+      dockerfile: ServiceB/Dockerfile
+    ports:
+      - "5051:5051"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:5051
+      - GRPC_SERVER_ALLOW_HTTP=1
+      - ASPNETCORE_PROTOCOL=Http2
